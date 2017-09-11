@@ -1,0 +1,4 @@
+External Library Notes and Credits
+
+d3 - https://d3js.org/
+jscolor - https://github.com/EastDesire
