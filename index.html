@@ -10,11 +10,12 @@
 	<script src="js/jscolor/jscolor.min.js"></script>
 
 	<style>
+
 		html, body {
 			box-sizing: border-box;
 			font-family: Helvetica, sans-serif;
 		}
-
+    
 		#canvases canvas {
 			border: 1px solid #333;
 			padding: 0px;
@@ -40,6 +41,7 @@
 			top: 0;
 			/*border-bottom: 2px solid #333;*/
 			box-shadow: 0px 5px 8px #777;
+			z-index: 999;
 		}
 		#controls .color-div {
 			position: relative;
@@ -114,6 +116,22 @@
 			left: 20px;
 			top: 37px;
 		}
+		#canvases canvas:hover {
+			transition: box-shadow 300ms;
+			box-shadow: 0px 0px 10px 5px #999;
+			z-index: 100;
+			cursor: pointer;
+		}
+
+    #canvases {
+	   margin-top: 200px;
+    }
+
+		#canvases canvas {
+			padding: 5px;
+		}
+
+			
 	</style>
 </head>
 <body>
