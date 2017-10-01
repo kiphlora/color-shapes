@@ -205,27 +205,21 @@
 			.on("click", updateColors)
 
 		function updateColors() {
-			colorlist = buildColorList(n, startColor.value, stopColor.value);
-			drawShapelyColors();
+			// colorlist = buildColorList(n, startColor.value, stopColor.value);
+			// drawShapelyColors();
+			generateColorCanvases();
 		}
 
 		var hl = hexLines(30);
 		var width = 220;
 		var height = 270;
 
-		var n = 120; //224; //24;
-		var canvasesD3 = d3.select("#canvases").selectAll(".canvases").data(d3.range(n))
-			.enter().append("canvas")
-				.attr("class", "canvases")
-				.attr("width", width)
-				.attr("height", height);
+		// var n = 120; //224; //24;
+		var numOfInterpolatedValues = 5000;
+		var canvasesD3;
 
 		var contexts = [];
 		var canvases = [];
-		canvasesD3.each(function(d,i){
-			canvases[i] = this;
-			contexts[i] = this.getContext("2d");
-		});
 
 		var clipboard = new Clipboard(".canvases");
 
@@ -266,6 +260,30 @@
 		    console.error('Trigger:', e.trigger);
 		});
 
+		function buildCanvases(listOfColors) {
+
+
+
+			n = listOfColors.length;
+			console.log(n);
+
+			canvasesD3 = d3.select("#canvases").selectAll(".canvases").remove();
+			canvases = [];
+			contexts = [];
+			
+			canvasesD3 = d3.select("#canvases").selectAll(".canvases").data(d3.range(n))
+				.enter().append("canvas")
+					.attr("class", "canvases")
+					.attr("width", width)
+					.attr("height", height);
+			
+			canvasesD3.each(function(d,i){
+				canvases[i] = this;
+				contexts[i] = this.getContext("2d");
+			});
+
+		}
+
 		function buildColorList(n, start, stop) {
 			var i = d3.interpolate({colors: [start]}, {colors: [stop]});
 
@@ -279,7 +297,12 @@
 				
 				return c;
 			});
-			
+
+			var colorlisthex = applyFun(colorlist, function(d,i){ return d.hex(); });
+			var colorset = new Set(colorlisthex);
+			colorlist = applyFun(Array.from(colorset), function(d,i){ return Color(d); });
+			n = colorlist.length;
+
 			return colorlist;
 		}
 
@@ -293,10 +316,15 @@
 		var center = new Vec2(width/2, height/2);
 		var colorlist;
 
-		window.onload = function() {
-			colorlist = buildColorList(n, startColor.value, stopColor.value);
-			drawHexLegend(hexCtx, hexLines(50), new Vec2(hexCanvas.node().width/2, hexCanvas.node().height/2));
+		function generateColorCanvases() {
+			colorlist = buildColorList(numOfInterpolatedValues, startColor.value, stopColor.value);
+			buildCanvases(colorlist);
 			drawShapelyColors();
+		}
+
+		window.onload = function() {
+			drawHexLegend(hexCtx, hexLines(50), new Vec2(hexCanvas.node().width/2, hexCanvas.node().height/2));
+			generateColorCanvases();
 		}
 		
 		function drawShapelyColors() {
