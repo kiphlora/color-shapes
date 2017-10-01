@@ -14,6 +14,23 @@ function vecOp(arr, f) {
 	return a;
 }
 
+function apply(array, fun) {
+	var a = [];
+	for (var i=0; i<array.length; i++) {
+		var d = array[i];
+		a[i] = fun(d,i);
+	}
+	return a;
+}
+
+function rep(value, len) {
+	var a = [];
+	for (var i=0; i<len; i++) {
+		a[i] = value;
+	}
+	return a;
+}
+
 function areArraysEqual(arr1, arr2) {
 	if (arr1.length !== arr2.length) return false;
 	for (var i=0; i<arr1.length; i++) {
