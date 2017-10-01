@@ -215,7 +215,7 @@
 		var height = 270;
 
 		// var n = 120; //224; //24;
-		var numOfInterpolatedValues = 5000;
+		var numOfInterpolatedValues = 360;
 		var canvasesD3;
 
 		var contexts = [];
@@ -270,7 +270,7 @@
 			canvasesD3 = d3.select("#canvases").selectAll(".canvases").remove();
 			canvases = [];
 			contexts = [];
-			
+
 			canvasesD3 = d3.select("#canvases").selectAll(".canvases").data(d3.range(n))
 				.enter().append("canvas")
 					.attr("class", "canvases")
