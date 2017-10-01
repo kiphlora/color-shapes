@@ -9,11 +9,17 @@
 	<script src="js/Color.js"></script>
 	<script src="js/jscolor/jscolor.min.js"></script>
 
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"></script>
+
 	<style>
 
 		html, body {
 			box-sizing: border-box;
 			font-family: Helvetica, sans-serif;
+		}
+
+		body {
+			/*background-color: rgba(0,0,0,0.2);*/
 		}
     
 		#canvases canvas {
@@ -128,7 +134,25 @@
     }
 
 		#canvases canvas {
-			padding: 5px;
+			/*padding: 5px;*/
+		}
+
+		#copied-text {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: calc(100vh + 200px);
+			opacity: 0;
+			pointer-events: none;
+			z-index: 101;
+		}
+
+		#copied-text p {
+			font-size: 30px;
 		}
 
 			
@@ -137,6 +161,7 @@
 <body>
 	
 	<!-- <canvas id="canvas"></canvas> -->
+	<div id="copied-text"><p>Copied!</p></div>
 	<div id="controls">
 		<canvas class="hex-legend"></canvas>
 		<div id="shapely-text">
@@ -202,6 +227,44 @@
 			contexts[i] = this.getContext("2d");
 		});
 
+		var clipboard = new Clipboard(".canvases");
+
+		clipboard.on('success', function(e) {
+		    console.info('Action:', e.action);
+		    console.info('Text:', e.text);
+		    console.info('Trigger:', e.trigger);
+
+		    var color = Color(Color.hexToRGB(e.text));
+		    var contrastColor = color.contrast().hex()
+		    d3.select("#copied-text").select("p").style("color", contrastColor);
+		    d3.select("#copied-text")
+		    		.style("background-color", e.text)
+		    	.transition()
+		    		.duration(0)
+		    		.style("opacity", 1)
+		    	.on("end", function(){
+		    		var me = d3.select(this);
+		    		me.transition().duration(1200).style("opacity", 0);
+		    	});
+
+
+		  //   var context = e.trigger.getContext("2d");
+		  //   context.font = "16px Helvetica";
+		  //   context.fillStyle = e.text
+				// context.textBaseline = "middle";
+				// context.textAlign = "center";
+				// copiedtextloc = new Vec2(20, 90);
+				// context.fillText("Copied!", copiedtextloc.x, copiedtextloc.y);
+
+				// setTimeout(drawShapelyColors, 800);
+
+		    e.clearSelection();
+		});
+
+		clipboard.on('error', function(e) {
+		    console.error('Action:', e.action);
+		    console.error('Trigger:', e.trigger);
+		});
 
 		function buildColorList(n, start, stop) {
 			var i = d3.interpolate({colors: [start]}, {colors: [stop]});
@@ -241,7 +304,9 @@
 				color = colorlist[i];
 				hex = color.hex();
 
-				d3.select(canvases[i]).style("border", "0px solid " + hex);
+				d3.select(canvases[i])
+					.attr("data-clipboard-text", hex)
+					.style("border", "0px solid " + hex);
 
 				resetCanvasMatrix(contexts[i]);
 
@@ -255,7 +320,7 @@
 				var centroid = new Vec2(-c.centroid.x, -c.centroid.y);
 				centroid = Vec2.add(center.clone(), centroid.clone());
 
-				hexTextLoc = new Vec2(width/2, 20);
+				hexTextLoc = new Vec2(width/2, 40);
 				contexts[i].fillStyle = hex;
 				contexts[i].font = "16px Helvetica";
 				contexts[i].textBaseline = "middle";
