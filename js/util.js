@@ -14,7 +14,7 @@ function vecOp(arr, f) {
 	return a;
 }
 
-function apply(array, fun) {
+function applyFun(array, fun) {
 	var a = [];
 	for (var i=0; i<array.length; i++) {
 		var d = array[i];
