@@ -271,11 +271,17 @@
 			canvases = [];
 			contexts = [];
 
-			canvasesD3 = d3.select("#canvases").selectAll(".canvases").data(d3.range(n))
+			canvasesD3 = d3.select("#canvases").selectAll(".canvases").data(listOfColors)
 				.enter().append("canvas")
 					.attr("class", "canvases")
 					.attr("width", width)
-					.attr("height", height);
+					.attr("height", height)
+				.on("mouseover", function(d,i){
+					d3.select(this).style("box-shadow", "0px 0px 10px 5px " + d.contrast().hex());
+				})
+				.on("mouseout", function(d,i){
+					d3.select(this).style("box-shadow", "none");
+				});
 			
 			canvasesD3.each(function(d,i){
 				canvases[i] = this;
@@ -340,7 +346,7 @@
 
 				contexts[i].clearRect(0,0,width,height);
 				contexts[i].beginPath();
-				contexts[i].fillStyle = color.contrast().hex();
+				contexts[i].fillStyle = hex;//color.contrast().hex();
 				contexts[i].fillRect(0,0,width,height);
 				contexts[i].closePath();
 
@@ -349,13 +355,13 @@
 				centroid = Vec2.add(center.clone(), centroid.clone());
 
 				hexTextLoc = new Vec2(width/2, 30);
-				contexts[i].fillStyle = hex;
+				contexts[i].fillStyle = color.contrast().hex(); //hex;
 				contexts[i].font = "16px Helvetica";
 				contexts[i].textBaseline = "middle";
 				contexts[i].textAlign = "center";
 				contexts[i].fillText(hex, hexTextLoc.x, hexTextLoc.y);
 
-	  		drawDynamicPathHex(contexts[i], hl, hex, centroid, 3, 4);
+	  		drawDynamicPathHex(contexts[i], hl, color, centroid, 3, 4);
 			}
 		}
 		
@@ -432,10 +438,10 @@
 			return { points: points, centroid: centroid };
 		}
 
-		function drawDynamicPathHex(ctx, lines, hexString, initialPoint, linkThickness, startRadius) {
+		function drawDynamicPathHex(ctx, lines, colorObj, initialPoint, linkThickness, startRadius) {
 			var absPoints = [];
 			var current = initialPoint.clone();
-
+			var hexString = colorObj.hex();
 			var color = hexString.toUpperCase();
 			var string = hexString.substring(1);
 
@@ -454,16 +460,17 @@
 				// ctx.strokeStyle = "rgba(0,0,0,0.2)";//Color(color).a(0.2).toString();
 				
 				ctx.fillStyle = color;
-				ctx.strokeStyle = "black";
+				ctx.strokeStyle = colorObj.contrast().hex();//"black";
 				ctx.lineWidth = 3;
 				ctx.arc(0, 0, radius, 0, 2*Math.PI);
 				ctx.fill();
+				ctx.stroke();
 				ctx.lineWidth = 1;
 				ctx.closePath();
 				ctx.beginPath();
 
 				// ctx.strokeStyle = Color(color).a(0.7).toString();
-				ctx.strokeStyle = "rgba(0,0,0,0.4)";
+				ctx.strokeStyle = colorObj.contrast().hex();//"rgba(0,0,0,0.4)";
 
 				ctx.textBaseline = "middle"; 
 				ctx.textAlign = "center"; 
@@ -479,6 +486,7 @@
 				ctx.lineTo(0,0);
 				// ctx.stroke();
 				ctx.fill();
+				ctx.stroke();
 				ctx.closePath();
 				ctx.beginPath();
 
