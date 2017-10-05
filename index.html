@@ -271,11 +271,17 @@
 			canvases = [];
 			contexts = [];
 
-			canvasesD3 = d3.select("#canvases").selectAll(".canvases").data(d3.range(n))
+			canvasesD3 = d3.select("#canvases").selectAll(".canvases").data(listOfColors)
 				.enter().append("canvas")
 					.attr("class", "canvases")
 					.attr("width", width)
-					.attr("height", height);
+					.attr("height", height)
+				.on("mouseover", function(d,i){
+					d3.select(this).style("box-shadow", "0px 0px 10px 5px " + d.contrast().hex());
+				})
+				.on("mouseout", function(d,i){
+					d3.select(this).style("box-shadow", "none");
+				});
 			
 			canvasesD3.each(function(d,i){
 				canvases[i] = this;
