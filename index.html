@@ -155,6 +155,41 @@
 			font-size: 30px;
 		}
 
+		.link-to-kiphlora {
+			text-decoration: none;
+			/*text-decoration: underline;*/
+			/*text-decoration-color: #ff7700;*/
+			border-bottom: 3px solid #999;
+			padding-bottom: 2px;
+			color: #999;
+		}
+
+		.link-to-kiphlora:hover {
+			text-decoration: none;
+			/*text-decoration: underline;*/
+			/*text-decoration-color: #ff7700;*/
+			border-bottom: 3px solid #ff7700;
+			padding-bottom: 2px;
+			color: #fff;
+		}
+
+		.link-to-github {
+			text-decoration: none;
+			color: #999;
+		}
+
+		.link-to-github:hover {
+			text-decoration: none;
+			color: #fff;
+			border-bottom: 3px solid #ff7700;
+			padding-bottom: 2px;
+		}
+
+		a {
+			outline: none;
+		}
+
+
 			
 	</style>
 </head>
@@ -165,9 +200,9 @@
 	<div id="controls">
 		<canvas class="hex-legend"></canvas>
 		<div id="shapely-text">
-			<h1>Color Shapes</h1>
+			<h1><a class="link-to-github" href="https://github.com/kiphlora/color-shapes">Color Shapes <span><i class="fa fa-github" aria-hidden="true"></i></span></a></h1>
 			<p>mapping hex to direction</p>
-			<p>by Brett Moran</p>
+			<p>By <a class="link-to-kiphlora" href="http://www.kiphlora.com">Brett Moran</a></p>
 		</div>
 		<div id="start-stop-div">
 			<div class="color-div start-div">
@@ -442,7 +477,8 @@
 			var absPoints = [];
 			var current = initialPoint.clone();
 			var hexString = colorObj.hex();
-			var color = hexString.toUpperCase();
+			// var color = hexString.toUpperCase();
+			var color = colorObj.contrast().hex().toUpperCase();
 			var string = hexString.substring(1);
 
 			absPoints.push({ x: current.x, y: current.y });
